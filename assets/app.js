@@ -6,6 +6,8 @@
 	Author:  Stefan Goessner/2006
 	Web:     http://goessner.net/ 
 */
+
+
 function json2xml(o, tab) {
     var toXml = function(v, name, ind) {
        var xml = "";
@@ -225,21 +227,44 @@ $(document).ready(function(){
       var baseURL = "http://api.eventful.com/rest/events/search?";
       var authentication = "&app_key="+eventfulAPIKEY;
       var searchByDateStr = "&date=";
-      var exampleDate = "2018101500-2018102000";
-      var finalURL = baseURL+authentication+searchByDateStr+exampleDate;
+      var location = "&location=55414"
+      var exampleDate = "2018101500-2018101500";
+      var pageNum = "&page_number=1";
+      var pageSize = "&page_size=3";
+      var finalURL = baseURL+authentication+pageSize+pageNum+location+searchByDateStr+exampleDate;
     
     $.ajax({
       url: finalURL,
       method: 'GET'
     }).then(function(result){
         $("#events").empty();
-      console.log(result.attributes);
+        var tab = "   ";
+        var json = xml2json(result, 
+            tab);
+            console.log(json);
+        var searchResults = json.split('"title":');
+        var event1 = searchResults[1];
+        var event2 = searchResults[2];
+        var event3 = searchResults[3];
+        console.log(event3);
+        //
+        console.log("****LOGGING EVENT TITLES****");
+        var titleStr1 = event1.split('",')[0];
+        titleStr1 = titleStr1.split('"')[1];
+        console.log(titleStr1);
+        var titleStr2 = event2.split('",')[0];
+        titleStr2 = titleStr2.split('"')[1];
+        console.log(titleStr2);
+        var titleStr3 = event3.split('",')[0];
+        titleStr3 = titleStr3.split('"')[1];
+        console.log(titleStr3);
     //   for (i = 0;i<numberOfRecords;i++){
     //   $("#articles").append("<p class = 'card-text'>"+result.response.docs[i].byline.original+"<p>")
     //   $("#articles").append("<h2 class = 'card-text'>"+result.response.docs[i].snippet+"<h2>")
     //   $("#articles").append("<h2 class = 'card-text'><a href='"+result.response.docs[i].web_url+"'>Link to Article</a><h2>")
     // }
     })
+    
   })
   })
 
