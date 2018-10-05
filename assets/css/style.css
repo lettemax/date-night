@@ -8,7 +8,15 @@
 }
 
 #event-images {
-    width: 30%;
+    padding: 5px;
+    margin: 5px;
+}
+
+.event-image {
+    padding: 5px;
+    margin: 5px;
+    max-height: 200px;
+    max-width: 200px;
 }
 
 .event-a {

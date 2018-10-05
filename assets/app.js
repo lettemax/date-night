@@ -218,6 +218,13 @@ const eventfulAPIKEY = "2Rx3KGp52ww5Z2s6";
 const pixabayAPIKEY = "10309063-bae375bbfc12120243955a4b0";
 var titles = [];
 
+
+//
+
+
+
+//
+
 $(document).ready(function(){
     $("#search").on("click",function(){
       console.log("clicked search by date, location (1 pg, 3 events");
@@ -225,10 +232,15 @@ $(document).ready(function(){
       var authentication = "&app_key="+eventfulAPIKEY;
       var searchByDateStr = "&date=";
       var location = "&location=55414"
-      var exampleDate = "2018101500-2018101500";
+      var exampleDate = "2018101400-2018101400";
       var pageNum = "&page_number=1";
       var pageSize = "&page_size=3";
       var eventfulFinalURL = eventfulBaseURL+authentication+pageSize+pageNum+location+searchByDateStr+exampleDate;
+      //
+      // second call variables
+      var googleBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs&location="; 
+      var radius = "&radius=100";
+      //
       console.log(eventfulFinalURL);
         $.ajax({
         url: eventfulFinalURL,
@@ -240,7 +252,14 @@ $(document).ready(function(){
                 tab);
                 console.log(json);
             var searchResults = json.split('"title":');
+            var eventPoint1 = json.split('"latitude":"');
+            var eventPoint2 = json.split('"longitude":"');
+            
             for (var i=1; i<searchResults.length; i++) {
+                var latitude = eventPoint1[1].split('"')[0];
+                var longitude = eventPoint2[1].split('"')[0];
+                var point = latitude+","+longitude;
+                console.log(point);
                 var event = searchResults[i];
                 var titleText = event.split('",')[0].split('"')[1];
                 titles.push(titleText);
@@ -252,37 +271,65 @@ $(document).ready(function(){
                 var nl = $("<p>");
                 $("#events").append(nl);
                 $("#events").append(a);
-            }
-        }).then(function(){
-            for (var i=0; i<titles.length; i++) {
-                var pixabayBaseURL = "https://pixabay.com/api/";
-                var keywords = titles[i]; 
-                var pixabayFinalURL = pixabayBaseURL+"?key="+pixabayAPIKEY+"&q="+keywords;
-                console.log("!!!!!"+pixabayFinalURL);
-                $.ajax({
-                url: " https://pixabay.com/api/?key=10309063-bae375bbfc12120243955a4b0&q=Basketball+Event+Teen+Basketball",
-                method: 'GET'
+                $.ajax({ 
+                    // url: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs&location=44.9815,-93.2365&radius=10",
+                    url: googleBaseURL+point+radius,
+                    method: 'GET'
                 }).then(function(result){
                     console.log(result);
-                });
+                    if (result.results[0].photos[0].photo_reference) {
+                        console.log(result.results[0].photos[0].photo_reference);
+                    } else if (result.results[1].photos[0].photo_reference) {
+                    console.log(result.results[1].photos[0].photo_reference);
+                    }
+                })
             }
-        }) 
+        })
+    }) 
+});
 
-        
-        // for (var i=0; i<titles.length; i++) {
-        //     var pixabayBaseURL = "https://pixabay.com/api/";
-        //     var keywords = titles[i]; 
-        //     var pixabayFinalURL = pixabayBaseURL+"key="+pixabayAPIKEY+"q="+keywords;
-        //     console.log("!!!!!"+pixabayFinalURL);
-        //     $.ajax({
-        //     url: pixabayFinalURL,
-        //     method: 'GET'
-        //     }).then(function(result){
-        //         console.log(result);
-        //     });
-        // }
-    });
-  });
+
+
+
+
+
+            // for (var i=0; i<titles.length; i++) {
+            //     var pixabayBaseURL = "https://pixabay.com/api/";
+            //     var title = titles[i]; 
+            //     var split = title.split(' ');
+            //     var keywords = [];
+            //     for (var i=0; i<2; i++) {
+            //         var add = split[i].replace(/[^A-Za-z0-9]/g, '');
+            //         // var add = split[i].replace(/[^A-Za-z]/g, '');
+            //         keywords.push(add);
+            //     }
+            //     var keywordStr = keywords.toString();
+            //     var trimmed = keywordStr.split(',').join('+');
+            //     var pixabayFinalURL = pixabayBaseURL+"?key="+pixabayAPIKEY+"&q="+trimmed;
+            //     console.log("-----"+pixabayFinalURL);
+            //     $.ajax({
+            //     url: pixabayFinalURL,
+            //     // url: "https://pixabay.com/api/?key=10309063-bae375bbfc12120243955a4b0&q=Basketball",
+            //     method: 'GET'
+            //     }).then(function(result){
+            //         var imgURL;
+            //         if (result.hits[0].largeImageURL) {
+            //             imgURL = result.hits[0].largeImageURL;
+            //         }
+            //         console.log("-----imgURL: "+imgURL);
+            //         var img = $("<img>");
+            //         img.attr("src", imgURL);
+            //         img.attr("rel", "should be img");
+            //         img.addClass("event-image");
+            //         var row = $("<div>");
+            //         row.addClass = $("row");
+            //         row.append(img);
+            //         $("#event-images").append(row);
+            //     });
+            // 
+            // }
+
+ 
 
 
 
