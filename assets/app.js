@@ -213,10 +213,7 @@ function xml2json(xml, tab) {
 // 
 //
 
-var dateStrFormat = "YYYYMMDD00-YYYYMMDD00";
-const eventfulAPIKEY = "2Rx3KGp52ww5Z2s6";
-const pixabayAPIKEY = "10309063-bae375bbfc12120243955a4b0";
-var titles = [];
+
 
 
 //
@@ -226,62 +223,175 @@ var titles = [];
 //
 
 $(document).ready(function(){
+
+
+
+
+
+
+
+    ////
+    ////
+    //// Max's code: eventful + google places images
+    ////
+    ////
     $("#search").on("click",function(){
+      // empty divs for fresh display
+      $("#events").empty();
+      $("#event-images").empty();
+      // log to know clicked search button
       console.log("clicked search by date, location (1 pg, 3 events");
+      // variables for eventful query url
+      // ex. of format of date search string
+      var dateStrFormat = "YYYYMMDD00-YYYYMMDD00";
+      // eventful apikey
+      const eventfulAPIKEY = "2Rx3KGp52ww5Z2s6";
+      // for event titles
+      var titles = [];
+      // base of query url
       var eventfulBaseURL = "http://api.eventful.com/rest/events/search?";
+      // api key header
       var authentication = "&app_key="+eventfulAPIKEY;
+      // date header
       var searchByDateStr = "&date=";
+      // location header
       var location = "&location=55414"
-      var exampleDate = "2018101400-2018101400";
+      // date header hardcode 
+      var exampleDate = "2018102500-2018102800";
+      // number of pages to return header
       var pageNum = "&page_number=1";
+      // number of results per page to return header
       var pageSize = "&page_size=3";
+      //  url to query
       var eventfulFinalURL = eventfulBaseURL+authentication+pageSize+pageNum+location+searchByDateStr+exampleDate;
-      //
-      // second call variables
-      var googleBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs&location="; 
-      var radius = "&radius=100";
-      //
-      console.log(eventfulFinalURL);
+      ////
+      ////
+      ////
+      // variables for google maps query url
+      var placeBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs&location="; 
+      var radius = "&radius=500";
+      var name = "&name=";
+      // ajax call to eventful api
         $.ajax({
         url: eventfulFinalURL,
         method: 'GET'
         }).then(function(result){
-            $("#events").empty();
+            // log the url
+            console.log("$$$eventfulURL: "+eventfulFinalURL);
+            // tab string to make converted json string look better
             var tab = "   ";
+            // convert result xml to json
             var json = xml2json(result, 
                 tab);
-                console.log(json);
-            var searchResults = json.split('"title":');
-            var eventPoint1 = json.split('"latitude":"');
-            var eventPoint2 = json.split('"longitude":"');
-            
-            for (var i=1; i<searchResults.length; i++) {
-                var latitude = eventPoint1[1].split('"')[0];
-                var longitude = eventPoint2[1].split('"')[0];
+            // log the json
+            console.log(json);
+            // split the json up by title to eventually get event titles
+            var eventTitles = json.split('"title":"');
+            // split the json up by "latitude" to eventually get event venue latitude
+            var eventLats = json.split('"latitude":"');
+            // split the json up by "longitude" to eventually get event venue longitude
+            var eventLongs = json.split('"longitude":"');
+            // split the json up by "venue_name"
+            var venueNames = json.split('"venue_name":"')
+            // loop through each of the events
+            for (var i=1; i<eventTitles.length; i++) {
+                // log i value
+                console.log(">>>> i = "+i);
+                // getting latitude of event venue 
+                var latitude = eventLats[i].split('"')[0];
+                console.log("eventLats[i]: "+eventLats[i]);
+                // getting longitude of event venue
+                var longitude = eventLongs[i].split('"')[0];
+                console.log("eventLongs[i]: "+eventLongs[i]);
+                // latitude, longitude coordinate pair
                 var point = latitude+","+longitude;
-                console.log(point);
-                var event = searchResults[i];
-                var titleText = event.split('",')[0].split('"')[1];
+                // log the point
+                console.log("(lat, long) = "+point);
+                // store event in variable
+                var eventTitle = eventTitles[i];
+                // get the title from the event string
+                var titleText = eventTitle.split('",')[0];
+                // push the title to the titles array
                 titles.push(titleText);
-                var eventURL = event.split('"url":"')[1].split('",')[0]; 
+                // get the url from the event string
+                var eventURL = eventTitle.split('"url":"')[1].split('",')[0]; 
+                // make link element
                 var a = $("<a>");
+                // add class event-a to a
                 a.addClass("event-a");
+                // set text to title string
                 a.text(titleText);
+                // add href url attribute
                 a.attr("href", eventURL);
-                var nl = $("<p>");
-                $("#events").append(nl);
+                // add newline element
+                var newline = $("<p>");
+                // append newline and a elements to events div
+                $("#events").append(newline);
                 $("#events").append(a);
+                // log venueNames[i]
+                console.log("===venue name[i]: "+venueNames[i]);
+                // get venue name
+                var venueNameStr = venueNames[i].split('",')[0];
+                // log venueNameStr
+                console.log("===venue name: "+venueNameStr);
+                // replace spaces with pluses
+                var venueNameTrimmed = venueNameStr.split(' ').join('+');
+                // log venueNameTrimmed
+                console.log("===venue name trimmed: "+venueNameTrimmed);
+                // final url to search for place using lat, long + venue name
+                var finalPlaceURL = placeBaseURL+point+radius+name+venueNameTrimmed;
+                // log the venue name
+                console.log("%%%%%url to get id: "+finalPlaceURL);
+                // query to get specific place's place id 
                 $.ajax({ 
-                    // url: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs&location=44.9815,-93.2365&radius=10",
-                    url: googleBaseURL+point+radius,
+                    url: finalPlaceURL,
                     method: 'GET'
                 }).then(function(result){
+                    // log the result
+                    console.log("$$$$place: ");
                     console.log(result);
-                    if (result.results[0].photos[0].photo_reference) {
-                        console.log(result.results[0].photos[0].photo_reference);
-                    } else if (result.results[1].photos[0].photo_reference) {
-                    console.log(result.results[1].photos[0].photo_reference);
-                    }
+                    // log the first place id
+                    console.log("***ID: "+result.results[0].place_id);
+                    // put the place id in a variable
+                    var place_id = result.results[0].place_id;
+                    // use place id in place details api call to get photoreference 
+                    var detailsURL = "https://maps.googleapis.com//maps/api/place/details/json?key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs&placeid="+place_id;
+                    $.ajax({ 
+                        url: detailsURL,
+                        method: 'GET'
+                    }).then(function(result){
+                        // log the url
+                        console.log("###url to get details: "+detailsURL);
+                        // log the result
+                        // need proper indent here
+                        console.log("----reference: "+result.result.photos[0].photo_reference);
+                        // loop through each result and get a photo reference 
+                        // for (var i=0; i<result.results.length; i++) {
+                        // dig into results to get photo_reference value
+                        var photo_reference = result.result.photos[0].photo_reference;
+                        // if photo_reference exists
+                        // if (photo_reference) {
+                        // log the reference
+                        console.log(photo_reference);
+                        // set variables for google place photos api call
+                        var imgSrcURL = "https://maps.googleapis.com/maps/api/place/photo?maxheight=200&maxwidth=200&photoreference="
+                                       +photo_reference+"&key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs";
+                        console.log("^^^^imgSrcURL: "+imgSrcURL);
+                        // create img element
+                        var photo = $("<img>");
+                        // add event-image class to img
+                        photo.addClass("event-image");
+                        // make img src the photoreference
+                        photo.attr("src", imgSrcURL);
+                        // add the photo to the event-images div
+                        $("#event-images").append(photo);
+                        // });
+                        // end the for loop
+                        // i = result.results.length;
+                            // }
+                        // }
+                        
+                    })
                 })
             }
         })
@@ -293,41 +403,7 @@ $(document).ready(function(){
 
 
 
-            // for (var i=0; i<titles.length; i++) {
-            //     var pixabayBaseURL = "https://pixabay.com/api/";
-            //     var title = titles[i]; 
-            //     var split = title.split(' ');
-            //     var keywords = [];
-            //     for (var i=0; i<2; i++) {
-            //         var add = split[i].replace(/[^A-Za-z0-9]/g, '');
-            //         // var add = split[i].replace(/[^A-Za-z]/g, '');
-            //         keywords.push(add);
-            //     }
-            //     var keywordStr = keywords.toString();
-            //     var trimmed = keywordStr.split(',').join('+');
-            //     var pixabayFinalURL = pixabayBaseURL+"?key="+pixabayAPIKEY+"&q="+trimmed;
-            //     console.log("-----"+pixabayFinalURL);
-            //     $.ajax({
-            //     url: pixabayFinalURL,
-            //     // url: "https://pixabay.com/api/?key=10309063-bae375bbfc12120243955a4b0&q=Basketball",
-            //     method: 'GET'
-            //     }).then(function(result){
-            //         var imgURL;
-            //         if (result.hits[0].largeImageURL) {
-            //             imgURL = result.hits[0].largeImageURL;
-            //         }
-            //         console.log("-----imgURL: "+imgURL);
-            //         var img = $("<img>");
-            //         img.attr("src", imgURL);
-            //         img.attr("rel", "should be img");
-            //         img.addClass("event-image");
-            //         var row = $("<div>");
-            //         row.addClass = $("row");
-            //         row.append(img);
-            //         $("#event-images").append(row);
-            //     });
-            // 
-            // }
+     
 
  
 
