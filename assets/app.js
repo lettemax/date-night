@@ -232,7 +232,7 @@ $(document).ready(function(){
 
     ////
     ////
-    //// Max's code: eventful + google places images
+    //// Get events from eventful + images from google place details
     ////
     ////
     $("#search").on("click",function(){
@@ -264,9 +264,6 @@ $(document).ready(function(){
       var pageSize = "&page_size=3";
       //  url to query
       var eventfulFinalURL = eventfulBaseURL+authentication+pageSize+pageNum+location+searchByDateStr+exampleDate;
-      ////
-      ////
-      ////
       // variables for google maps query url
       var placeBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs&location="; 
       var radius = "&radius=500";
@@ -363,14 +360,9 @@ $(document).ready(function(){
                         // log the url
                         console.log("###url to get details: "+detailsURL);
                         // log the result
-                        // need proper indent here
                         console.log("----reference: "+result.result.photos[0].photo_reference);
-                        // loop through each result and get a photo reference 
-                        // for (var i=0; i<result.results.length; i++) {
                         // dig into results to get photo_reference value
                         var photo_reference = result.result.photos[0].photo_reference;
-                        // if photo_reference exists
-                        // if (photo_reference) {
                         // log the reference
                         console.log(photo_reference);
                         // set variables for google place photos api call
@@ -384,13 +376,7 @@ $(document).ready(function(){
                         // make img src the photoreference
                         photo.attr("src", imgSrcURL);
                         // add the photo to the event-images div
-                        $("#event-images").append(photo);
-                        // });
-                        // end the for loop
-                        // i = result.results.length;
-                            // }
-                        // }
-                        
+                        $("#event-images").append(photo); 
                     })
                 })
             }
