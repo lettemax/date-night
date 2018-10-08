@@ -216,7 +216,7 @@ var dateStrFormat = "YYYYMMDD00-YYYYMMDD00";
 const eventfulAPIKEY = "2Rx3KGp52ww5Z2s6";
 
 $(document).ready(function(){
-    $("#search").on("click",function(){
+    $("#submitForm").on("click",function(){
       console.log("clicked search by date")
     //   var searchTerm = $("#search").val().trim();
     //   var numberOfRecords = $("#records").val().trim()
