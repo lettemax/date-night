@@ -37,7 +37,7 @@
 
     <div class="row">
 
-      <div class="col-md-6">
+      <div class="col-sm-">
         <form>
           <div class="form-group">
             <label id="Date"><h6>Date</h6></label>  <i class="material-icons">
@@ -54,30 +54,25 @@
           <button type="button" id="submitForm" class="btn btn-primary">Submit</button>
         </form>
       </div>
-      <div class="col-md-6">
+      <!-- <div class="col-sm-4">
         <div id="select" class="card" style="width: 18rem;">
           <div class="card-body">
             <h5 class="card-title">Event</h5>
             <h6 class="card-subtitle mb-2 text-muted">Event Name</h6>
             <p class="card-text">quick description of the event/where its at</p>
-            <a id="dislike" href="#" class="card-link"><i class="material-icons">
-                thumb_up_alt
-              </i></a>
-            <a id="dislike" href="#" class="card-link"><i class="material-icons">
-                thumb_down_alt
-              </i></a>
-          </div>
+            </div>
         </div>
         <!-- when a selection is made above either update card with new event orhide the card and show food choice card -->
-        <div id="select" class="card" style="width: 18rem; display: none">
-          <div class="card-body">
-            <h5 class="card-title">Food</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Rest Name</h6>
-            <p class="card-text">quick description of the food place/what kind of food is here</p>
-            <a id="like" href="#" class="card-link">like</a>
-            <a id="dislike" href="#" class="card-link">dislike</a>
+        <!-- <div class="col-sm-4">
+            <div id="select" class="card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">Event</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Event Name</h6>
+                <p class="card-text">quick description of the event/where its at</p>
+                </div>
+            </div>
           </div>
-        </div>
+        </div> -->
         <!-- mission -->
       </div>
     </div>
@@ -88,8 +83,14 @@
       <h4>Your Perfect Date</h4>
     </div>
   </div>
-  <div id="displayResults" class="container">
   <div class="row">
+    <div id="eventResults" class="col-sm-6">
+      </div>
+  <div id="restResults" class="col-sm-6">
+
+  </div>
+</div>
+<div class="row">
     <!-- append cards selected by user -->
     <!-- <div id="selectedE" class="card" style="width: 18rem;">
       <div class="card-body">
