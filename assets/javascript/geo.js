@@ -37,9 +37,9 @@ $(document).ready(function(){
             url: locationApiUrl,
             method: "GET"
           }).then(function(response){
-            console.log(response.resultsPage.results)
-            metroID = response.resultsPage.results.location[0].metroArea.displayNamels;
-            console.log(metroID)
+            console.log("results: "+response.resultsPage.results);
+            metroID = response.resultsPage.results.location[0].metroArea.displayName;
+            console.log("metroid: "+metroID)
             
     
             $("#locationInput").val(metroID);
