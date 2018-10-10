@@ -4,12 +4,12 @@ $(document).ready(function(){
       var locLat, locLng
 
     
-      function initMap() {
+      function initMap(callBack) {
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs&callback=initMap"
          
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
+          return navigator.geolocation.getCurrentPosition(function(position) {
             var pos = {
               lat: position.coords.latitude,
               lng: position.coords.longitude
@@ -18,6 +18,7 @@ $(document).ready(function(){
             locLat = pos.lat;
             locLng = pos.lng;
             console.log("lat is"+ locLat + "long is" + locLng);
+            callBack();
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
@@ -28,28 +29,25 @@ $(document).ready(function(){
       }
 
       $("#locId").on("click", function(){
-
-    
-        var cityQueryUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+ locLat+","+locLng+"&key=AIzaSyCyzG2it5G1mxi_GPoa85F-ol0GdWx4rXs"
-        
-        initMap()
-        $.ajax({
-            url: cityQueryUrl,
+        initMap(function() {
+          console.log()
+          var locationApiUrl = "https://api.songkick.com/api/3.0/search/locations.json?location=geo:"+locLat+","+locLng+"&apikey=XFK6hX8iZ4LjPg6l"
+          var metroID
+          $.ajax({
+            url: locationApiUrl,
             method: "GET"
           }).then(function(response){
-            cityResponse = response.results[0];
-            console.log(cityResponse);
-
-            let city = cityResponse.address_components[2].short_name;
-            let state = cityResponse.address_components[4].short_name;
-            console.log(city);
-            console.log(state);
-            console.log(city+","+state)
+            console.log(response.resultsPage.results)
+            metroID = response.resultsPage.results.location[0].metroArea.displayNamels;
+            console.log(metroID)
+            
     
-            $("#locationInput").text(city+","+state);
+            $("#locationInput").val(metroID);
     
           })
+        
     })
+  })
          
       
       function location2(x){
@@ -67,7 +65,7 @@ $(document).ready(function(){
         
       }
       // location2("minneapolis").then((res) => console.log(res));
-      
+      // location2("geo=lat'44.983753',lng'-93.1803827'");
 
       $("#submitForm").on("click", function() {  
       // }

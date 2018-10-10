@@ -150,10 +150,10 @@ form{
         display: none;
     }
    #dateInput{
-       width: 60%;
+       width: 80%;
    }
    #locationInput{
-       width: 60%;
+       width: 80%;
    }
    #yesno {
        left: -10%;
