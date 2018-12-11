@@ -1,4 +1,6 @@
 # date-night
+**YOU MUST ENABLE CROSS-ORIGIN RESOURCE SHARING TO FIND A RESTAURANT
+
 Project 1, deployed at: https://date-night-.herokuapp.com/index.html
 
 Having a hard time with ideas for date night?  Use the new date night application to generate some great ideas for a night out with your significant other.
