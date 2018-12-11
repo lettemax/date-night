@@ -1,5 +1,5 @@
 # date-night
-Project 1, deployed at: https://date-night-.herokuapp.com/index.html
+Project 1, deployed at: https://date-night-proj1.herokuapp.com/
 
 Having a hard time with ideas for date night?  Use the new date night application to generate some great ideas for a night out with your significant other.
 
